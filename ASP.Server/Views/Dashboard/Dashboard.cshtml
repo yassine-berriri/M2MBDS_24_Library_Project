@@ -1,0 +1,166 @@
+﻿@{
+    ViewData["Title"] = "Dashboard Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Statistiques</h1>
+</div>
+<br />
+<!-- Section pour les statistiques -->
+
+<div class="card">
+    <div class="col-md-6">
+        <h2>Nombre de livre : <strong>@ViewData["TotalBooks"]</strong></h2>
+        <canvas id="booksChart" class="mh-200px mw-200px"></canvas>
+    </div>
+    <br />
+    <div class="col-md-6">
+        <h2>Nombre de livres par Auteur</h2>
+        <canvas id="authorsChart" class="mh-300px mw-500px"></canvas>
+    </div>
+    <br />
+    <div class="col-md-6">
+        <h2>Nombre de livres par Genre</h2>
+        <canvas id="authorsGenresChart" class="mh-300px mw-500px"></canvas>
+    </div>
+    <br />
+    <div>
+        <h2>Statistique sur les livres</h2>
+        <canvas id="booksChartStat" class="mh-300px mw-500px"></canvas>
+        <h3>Informations</h3>
+        <ul>
+            <li>Nombre totale de livre: @ViewData["TotalBooks"]</li>
+            <li>Nombre maximum des mots dans un livre: @ViewData["MaxWords"]</li>
+            <li>Nombre minimum des mots dans un livre: @ViewData["MinWords"]</li>
+            <li>La moyenne des mots des livres: @ViewData["AverageWords"]</li>
+            <li>Médiane des mots: @ViewData["MedianWords"]</li>
+        </ul>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctxBooks = document.getElementById('booksChart');
+    const totalBooks = @ViewData["TotalBooks"];
+
+    new Chart(ctxBooks, {
+        type: 'bar',
+        data: {
+            labels: ['Total Books'],
+            datasets: [{
+                label: 'Number of Books',
+                data: [totalBooks],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgb(75, 192, 192)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    const ctxAuthors = document.getElementById('authorsChart');
+    const booksPerAuthorData = @Html.Raw(Json.Serialize(ViewData["BooksPerAuthor"]));
+    booksPerAuthorData.forEach(item => {
+        item.BookCount = parseInt(item.BookCount);
+    });
+
+    //console.log(booksPerAuthorData);
+
+    // Déclarer la variable chart pour éviter l'erreur
+    let chart;
+
+    const currentLabels = chart ? chart.data.labels : [];
+    const newAuthors = booksPerAuthorData.map(item => item.authorName).filter(author => !currentLabels.includes(author));
+    currentLabels.push(...newAuthors);
+
+    // Mise à jour du graphique
+    if (chart) {
+        chart.update();
+    }
+
+    // BooksAuthorChart
+    new Chart(ctxAuthors, {
+        type: 'bar',
+        data: {
+            labels: booksPerAuthorData.map(item => item.authorName),
+            datasets: [{
+                label: 'Number of Books',
+                data: booksPerAuthorData.map(item => item.bookCount),
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // authorsGenresChart
+
+    const ctxAuthorsGenres = document.getElementById('authorsGenresChart');
+    const booksPerGenreData = @Html.Raw(Json.Serialize(ViewData["BooksPerGenre"]));
+    booksPerGenreData.forEach(item => {
+        item.BookCount = parseInt(item.BookCount);
+    });
+
+    new Chart(ctxAuthorsGenres, {
+        type: 'bar',
+        data: {
+            labels: booksPerGenreData.map(item => item.genreName),
+            datasets: [{
+                label: 'Number of Books',
+                data: booksPerGenreData.map(item => item.bookCount),
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    // BooksChart
+    const ctxBooksStat = document.getElementById('booksChartStat');
+
+    const maxWords = @ViewData["MaxWords"].ToString().Replace(",", ".");;
+    const minWords = @ViewData["MinWords"].ToString().Replace(",", ".");;
+    const averageWords = @ViewData["AverageWords"].ToString().Replace(",", ".");;
+    const medianWords = @ViewData["MedianWords"].ToString().Replace(",", ".");;
+
+    new Chart(ctxBooksStat, {
+        type: 'bar',
+        data: {
+            labels: ['Max Words', 'Min Words', 'Average Words', 'Median Words'],
+            datasets: [{
+                label: 'Book Statistics',
+                data: [maxWords, minWords, averageWords, medianWords],
+                backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+                borderColor: ['rgb(75, 192, 192)', 'rgb(255, 99, 132)', 'rgb(255, 99, 132)', 'rgb(255, 99, 132)', 'rgb(255, 99, 132)'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>

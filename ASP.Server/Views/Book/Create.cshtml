@@ -1,0 +1,83 @@
+﻿@using ASP.Server.Controllers
+@using ASP.Server.ViewModels
+@model CreateBookViewModel
+@{
+    ViewData["Title"] = "Add a book";
+}
+
+<style>
+    .input-group {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    input, textarea, select {
+        flex-basis: 85%;
+    }
+
+    label {
+        flex-basis: 10%;
+    }
+</style>
+
+<br />
+<!--begin::Alert-->
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>Error:</strong> There were some problems with your submission.
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+<!--end::Alert-->
+        <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+            <!--begin::Add customer-->
+            <a class="btn btn-primary btn-sm" asp-controller="Book" asp-action="CreateFromApi"> Create From APi</a>
+            <!--end::Add customer-->
+        </div>
+<form class="form fv-plugins-bootstrap5 fv-plugins-framework" asp-controller="Book" asp-action="Create">
+    <div class="fv-row mb-7 fv-plugins-icon-container">
+        <label class="required fs-6 fw-bold mb-2" asp-for="Name"></label>
+        <input class="form-control form-control-solid" asp-for="Name" />
+    </div>
+    <span asp-validation-for="Name" class="text-danger"></span>
+
+    <div class="fv-row mb-7 fv-plugins-icon-container">
+        <label class="required fs-6 fw-bold mb-2" asp-for="Content"></label>
+        <textarea class="form-control form-control-solid" asp-for="Content"></textarea>
+    </div>
+    <span asp-validation-for="Content" class="text-danger"></span>
+
+    <div class="fv-row mb-7 fv-plugins-icon-container">
+        <label class="required fs-6 fw-bold mb-2" asp-for="Price"></label>
+        <input class="form-control form-control-solid" asp-for="Price" />
+    </div>
+    <span asp-validation-for="Price" class="text-danger"></span>
+
+    <!-- Add more fields as needed -->
+
+    <div class="input-group">
+        <label class="required fs-6 fw-bold mb-2"  asp-for="Genres"></label>
+        <select class="form-select form-select-solid" data-control="select2" data-placeholder="Select an option"  asp-for="Genres" asp-items="@(new SelectList(Model.AllGenres, "Id", "Name"))" multiple>
+            <option value="">Select Genre</option>
+        </select>
+    </div>
+    <span asp-validation-for="Genres" class="text-danger"></span>
+
+    <div class="input-group">
+        <label class ="required fs-6 fw-bold mb-2" asp-for="Authors"></label>
+        <select class="form-select form-select-solid" data-control="select2" data-placeholder="Select an option" asp-for="Authors" asp-items="@(new SelectList(Model.AllAuthors, "Id", "FullName"))" multiple>
+            <option value="">Select Author</option>
+        </select>
+    </div>
+    <span asp-validation-for="Authors" class="text-danger"></span>
+
+    <input class="save btn btn-primary"  type="submit" value="Add" style="width: 100%; margin-top: 50px" />
+</form>

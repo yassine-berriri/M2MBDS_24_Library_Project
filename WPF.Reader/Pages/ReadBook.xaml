@@ -1,0 +1,67 @@
+﻿<Page x:Class="WPF.Reader.Pages.ReadBook"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WPF.Reader.Pages"
+      xmlns:vm="clr-namespace:WPF.Reader.ViewModel"
+      mc:Ignorable="d" 
+      d:DataContext="{d:DesignInstance Type=vm:ReadBook, IsDesignTimeCreatable=True}"
+      Title="ReadBook">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Titre du livre -->
+        <TextBlock Grid.Row="0" Text="{Binding Book.Name}" FontWeight="Bold" FontSize="24" HorizontalAlignment="Center" Margin="20"/>
+
+        <!-- Contenu du livre avec ScrollViewer -->
+        <ScrollViewer Grid.Row="1"  VerticalScrollBarVisibility="Auto">
+            <TextBox x:Name="BookContentTextBox"
+             IsReadOnly="True"
+             ContextMenuOpening="ContextMenuOP"
+             HorizontalAlignment="Center"        
+             Text="{Binding Book.Content}" TextWrapping="Wrap" Margin="20"
+             BorderThickness="0" Background="Transparent"/>
+        </ScrollViewer>
+
+        <!-- Auteurs et Genres du livre -->
+        <StackPanel Grid.Row="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="20">
+            <!-- Auteurs -->
+            <TextBlock Text="Auteurs:" FontWeight="SemiBold" FontSize="16"/>
+            <ItemsControl ItemsSource="{Binding Book.Authors}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding FullName}" Margin="5"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Genres -->
+            <TextBlock Text="Genres:" FontWeight="SemiBold" FontSize="16" Margin="10,5,0,0"/>
+            <ItemsControl ItemsSource="{Binding Book.Genres}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" Margin="5"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,10,10,10">
+            <TextBlock Text="Vous pouvez sélectionner un texte et le lire, faites un clic droit pour commencer la lecture." FontWeight="SemiBold" FontSize="13"/>
+        </StackPanel>
+
+
+        <!-- Boutons Play et Pause -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20 " >
+            <Button Content="Play" Command="{Binding PlayCommand}" Width="100" Height="40" Margin="15" Style="{StaticResource AccentButtonStyle}" Click="Button_Click_1"/>
+            <Button Content="Pause" Command="{Binding PauseCommand}" Width="100" Height="40" Margin="10" Style="{StaticResource AccentButtonStyle}"/>
+        </StackPanel>
+    </Grid>
+</Page>
+    

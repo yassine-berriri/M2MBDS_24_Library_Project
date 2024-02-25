@@ -1,0 +1,98 @@
+﻿@using ASP.Server.Controllers
+@using ASP.Server.ViewModels
+@model UpdateBookViewModel
+@{
+    ViewData["Title"] = "Edit a book";
+}
+
+<style>
+    .input-group {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    input, textarea, select {
+        flex-basis: 85%;
+    }
+
+    label {
+        flex-basis: 10%;
+    }
+</style>
+
+
+
+<form class="form fv-plugins-bootstrap5 fv-plugins-framework" asp-controller="Book" asp-action="Update">
+    <div class="fv-row mb-7 fv-plugins-icon-container">
+        <label class="required fs-6 fw-bold mb-2" asp-for="Name"></label>
+        <input class="form-control form-control-solid" asp-for="Name" />
+    </div>
+    <span asp-validation-for="Name" class="text-danger"></span>
+
+    <div class="fv-row mb-7 fv-plugins-icon-container">
+        <label class="required fs-6 fw-bold mb-2" asp-for="Content"></label>
+        <textarea class="form-control form-control-solid" asp-for="Content"></textarea>
+    </div>
+    <span asp-validation-for="Content" class="text-danger"></span>
+
+    <div class="fv-row mb-7 fv-plugins-icon-container">
+        <label class="required fs-6 fw-bold mb-2" asp-for="Price"></label>
+        <input class="form-control form-control-solid" asp-for="Price" />
+    </div>
+    <span asp-validation-for="Price" class="text-danger"></span>
+
+    <!-- Add more fields as needed -->
+
+    <div class="input-group">
+        <label class="required fs-6 fw-bold mb-2" asp-for="SelectedGenres"></label>
+        <select class="form-select form-select-solid" data-control="select2" data-placeholder="Select an option" asp-for="SelectedGenres" multiple>
+            <option value="">Select Genre</option>
+            @foreach (var genre in Model.AllGenres)
+            {
+                @if (@ViewBag.myGenres.Contains(genre.Id))
+                {
+                    <option value="@genre.Id" selected>
+                        @genre.Name
+                    </option>
+                }
+                else
+                {
+                    <option value="@genre.Id">
+                        @genre.Name
+                    </option>
+                }
+            }
+        </select>
+    </div>
+
+    <span asp-validation-for="SelectedGenres" class="text-danger"></span>
+
+
+        <div class="input-group">
+        <label class="required fs-6 fw-bold mb-2" asp-for="SelectedAuthors"></label>
+        <select class="form-select form-select-solid" data-control="select2" data-placeholder="Select an option" asp-for="SelectedAuthors" multiple>
+            <option value="">Select Author</option>
+            @foreach (var author in Model.AllAuthors)
+            {
+                @if (@ViewBag.myAuthors.Contains(author.Id))
+                {
+                    <option value="@author.Id" selected>
+                        @author.FullName
+                    </option>
+                }
+                else
+                {
+                    <option value="@author.Id">
+                       @author.FullName
+                    </option>
+                }
+            }
+        </select>
+    </div>
+    <span asp-validation-for="SelectedAuthors" class="text-danger"></span>
+
+    <input class="save btn btn-primary" type="submit" value="Edit" style="width: 100%; margin-top: 50px" />
+</form>
+
